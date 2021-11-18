@@ -30,6 +30,8 @@ program
     const inputBuffer = fs.readFileSync ( inputPath );
     const password = await Prompt.line ( 'Password: ' );
     if ( !password ) return Utils.fail ( 'Password can not be empty!' );
+    const passwordConfirmation = await Prompt.line ( 'Password confirmation: ' );
+    if ( password !== passwordConfirmation ) return Utils.fail ( 'The passwords do not match!' );
     try {
       const transform = isSecret ? Secret.decrypt : Secret.encrypt;
       const outputBuffer = transform ( inputBuffer, password );
