@@ -1,3 +1,8 @@
+
+<p align="center">
+  <img src="resources/demo.gif" width="650" alt="Demo">
+</p>
+
 # Secret
 
 The simplest command to encrypt/decrypt a file, useful for committing encrypted ".env" files to version control, among other things.
@@ -10,24 +15,18 @@ Secret automatically detects if you want to encrypt or decrypt a file: if the fi
 npm install -g @fabiospampinato/secret
 ```
 
-## Demo
-
-<p align="center">
-  <img src="resources/demo.gif" width="650" alt="Demo">
-</p>
-
 ## Usage
 
 Encrypt a file:
 
 ```sh
-$ secret myFile.txt
+secret myFile.txt
 ```
 
 Decrypt a file:
 
 ```sh
-$ secret myFile.txt.secret
+secret myFile.txt.secret
 ```
 
 ## License

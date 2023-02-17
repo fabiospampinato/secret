@@ -1,7 +1,7 @@
 
 /* IMPORT */
 
-import crypto from 'crypto';
+import crypto from 'node:crypto';
 
 /* HELPERS */
 

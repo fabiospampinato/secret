@@ -1,11 +1,11 @@
 
 /* IMPORT */
 
-import readline from 'readline';
+import readline from 'node:readline';
 
 /* MAIN */
 
-//TODO: Maybe a little module out of this
+//TODO: Maybe make a little module out of this
 
 const Prompt = {
 

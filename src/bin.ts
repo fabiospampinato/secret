@@ -2,10 +2,10 @@
 
 /* IMPORT */
 
-import fs from 'fs';
-import path from 'path';
-import {color, program, updater} from 'specialist';
-import {displayName, name, version, description} from '../package.json';
+import fs from 'node:fs';
+import path from 'node:path';
+import process from 'node:process';
+import {bin, color} from 'specialist';
 import {SECRET_SUFFIX} from './constants';
 import Prompt from './prompt';
 import Utils from './utils';
@@ -13,14 +13,11 @@ import Secret from '.';
 
 /* MAIN */
 
-updater ({ name, version });
-
-program
-  .name ( displayName )
-  .version ( version )
-  .description ( description )
-  .arguments ( '<file>' )
-  .action ( async ( inputFile: string ) => {
+bin ( 'secret', 'The simplest command to encrypt/decrypt a file' )
+  /* DEFAULT COMMAND */
+  .argument ( '<file>', 'The file to encrypt/descrypt' )
+  .action ( async ( options, inputFiles ) => {
+    const inputFile = inputFiles[0];
     const isSecret = inputFile.endsWith ( SECRET_SUFFIX );
     const inputPath = path.resolve ( process.cwd (), inputFile );
     const inputExists = fs.existsSync ( inputPath );
@@ -42,10 +39,9 @@ program
       if ( !shouldOverwrite ) return process.exit ( 0 );
       fs.writeFileSync ( outputPath, outputBuffer );
       console.log ( `${color.green ( '✔' )} ${isSecret ? 'Decrypted' : 'Encrypted'}: "${inputFile}" -> "${outputFile}"` );
-      process.exit ( 0 );
     } catch {
       Utils.fail ( `${isSecret ? 'Decription' : 'Encryption'} failed, try again!` );
     }
-  });
-
-program.parse ();
+  })
+  /* RETURN */
+  .run ();
