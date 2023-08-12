@@ -1,7 +1,8 @@
 
 /* IMPORT */
 
-import Crypto from './crypto';
+import Encryptor from 'tiny-encryptor';
+import {ENCRYPTION_PBKDF2_ROUNDS} from './constants';
 
 /* MAIN */
 
@@ -9,27 +10,15 @@ const Secret = {
 
   /* API */
 
-  encrypt: ( data: Buffer, password: string ): Buffer => {
+  encrypt: ( data: Uint8Array, secret: string ): Promise<Uint8Array> => {
 
-    return Crypto.encrypt ( data, Buffer.from ( password ) );
-
-  },
-
-  encryptStr: ( data: string, password: string ): string => {
-
-    return Crypto.encrypt ( Buffer.from ( data ), Buffer.from ( password ) ).toString ( 'hex' );
+    return Encryptor.encrypt ( data, secret, undefined, ENCRYPTION_PBKDF2_ROUNDS );
 
   },
 
-  decrypt: ( data: Buffer, password: string ): Buffer => {
+  decrypt: ( data: Uint8Array, secret: string ): Promise<Uint8Array> => {
 
-    return Crypto.decrypt ( data, Buffer.from ( password ) );
-
-  },
-
-  decryptStr: ( data: string, password: string ): string => {
-
-    return Crypto.decrypt ( Buffer.from ( data, 'hex' ), Buffer.from ( password ) ).toString ();
+    return Encryptor.decrypt ( data, secret );
 
   }
 

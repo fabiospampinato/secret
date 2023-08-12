@@ -5,44 +5,45 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
-import {bin, color} from 'specialist';
+import * as prask from 'prask';
+import {bin} from 'specialist';
 import {SECRET_SUFFIX} from './constants';
-import Prompt from './prompt';
-import Utils from './utils';
 import Secret from '.';
 
 /* MAIN */
 
 bin ( 'secret', 'The simplest command to encrypt/decrypt a file' )
   /* DEFAULT COMMAND */
-  .argument ( '<file>', 'The file to encrypt/descrypt' )
+  .argument ( '<file>', 'The file to encrypt or descrypt' )
   .action ( async ( options, inputFiles ) => {
+    /* INPUT */
     const inputFile = inputFiles[0];
-    const isSecret = inputFile.endsWith ( SECRET_SUFFIX );
     const inputPath = path.resolve ( process.cwd (), inputFile );
     const inputExists = fs.existsSync ( inputPath );
-    if ( !inputExists ) return Utils.fail ( `"${inputFile}" does not exist!` );
-    const stat = fs.lstatSync ( inputPath );
-    if ( !stat.isFile () ) return Utils.fail ( `"${inputFile}" is not a file!` );
+    if ( !inputExists ) return prask.log.error ( `"${inputFile}" does not exist!` );
+    const inputStat = fs.lstatSync ( inputPath );
+    if ( !inputStat.isFile () ) return prask.log.error ( `"${inputFile}" is not a file!` );
     const inputBuffer = fs.readFileSync ( inputPath );
-    const password = await Prompt.line ( 'Password: ' );
-    if ( !password ) return Utils.fail ( 'Password can not be empty!' );
-    if ( !isSecret ) {
-      const passwordConfirmation = await Prompt.line ( 'Password confirmation: ' );
-      if ( password !== passwordConfirmation ) return Utils.fail ( 'The passwords do not match!' );
-    }
+    /* PASSWORD */
+    const isSecret = inputFile.endsWith ( SECRET_SUFFIX );
+    const password = await prask.password ({ message: 'Password:', required: true });
+    if ( !password ) return;
+    const passwordConfirmation = isSecret ? password : await prask.password ({ message: 'Password confirmation:', required: true });
+    if ( !passwordConfirmation ) return;
+    if ( password !== passwordConfirmation ) return prask.log.error ( 'The two passwords do not match!' );
+    /* OUTPUT */
     try {
       const transform = isSecret ? Secret.decrypt : Secret.encrypt;
-      const outputBuffer = transform ( inputBuffer, password );
+      const outputBuffer = await transform ( inputBuffer, password );
       const outputFile = isSecret ? path.basename ( inputFile, path.extname ( inputFile ) ) : `${inputFile}${SECRET_SUFFIX}`;
       const outputPath = path.resolve ( process.cwd (), outputFile );
       const outputExists = fs.existsSync ( outputPath );
-      const shouldOverwrite = !outputExists || await Prompt.Yn ( `"${outputFile}" already exists, do you want to overwrite it? [Y/n]: ` );
-      if ( !shouldOverwrite ) return process.exit ( 0 );
+      const outputOverwrite = !outputExists || await prask.toggle ({ message: `"${outputFile}" already exists, do you want to overwrite it?` });
+      if ( !outputOverwrite ) return;
       fs.writeFileSync ( outputPath, outputBuffer );
-      console.log ( `${color.green ( '✔' )} ${isSecret ? 'Decrypted' : 'Encrypted'}: "${inputFile}" -> "${outputFile}"` );
+      prask.log.success ( `${isSecret ? 'Decrypted' : 'Encrypted'}, "${inputFile}" -> "${outputFile}"` );
     } catch {
-      Utils.fail ( `${isSecret ? 'Decription' : 'Encryption'} failed, try again!` );
+      prask.log.error ( `${isSecret ? 'Decryption' : 'Encryption'} failed, try again!` );
     }
   })
   /* RETURN */
