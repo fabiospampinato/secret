@@ -1,6 +1,6 @@
 
 <p align="center">
-  <img src="resources/demo.gif" width="650" alt="Demo">
+  <img src="resources/demo.gif" width="662" alt="Demo">
 </p>
 
 # Secret
