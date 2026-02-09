@@ -27,13 +27,13 @@
     "secrets"
   ],
   "dependencies": {
-    "prask": "^2.0.0",
-    "specialist": "^1.3.0",
-    "tiny-encryptor": "^1.0.0"
+    "prask": "^2.2.4",
+    "specialist": "^2.0.0",
+    "tiny-encryptor": "^1.0.1"
   },
   "devDependencies": {
-    "@types/node": "^20.4.10",
-    "tsex": "^3.0.1",
-    "typescript": "^5.1.6"
+    "@types/node": "^18.19.130",
+    "tsex": "^4.0.2",
+    "typescript": "^5.9.3"
   }
 }

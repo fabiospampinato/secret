@@ -13,7 +13,6 @@ import Secret from '.';
 /* MAIN */
 
 bin ( 'secret', 'The simplest command to encrypt/decrypt a file' )
-  /* DEFAULT COMMAND */
   .argument ( '<file>', 'The file to encrypt or descrypt' )
   .action ( async ( options, inputFiles ) => {
     /* INPUT */
@@ -46,5 +45,4 @@ bin ( 'secret', 'The simplest command to encrypt/decrypt a file' )
       prask.log.error ( `${isSecret ? 'Decryption' : 'Encryption'} failed, try again!` );
     }
   })
-  /* RETURN */
   .run ();
